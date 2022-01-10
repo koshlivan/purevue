@@ -6,9 +6,13 @@
            @deleteSelected="remove"></cap>
       <div class="data">
           <TableHead @setAllChecked="setAllChecked"
+                     :all-check="isAllChecked"
+                     @update:checkAllLines="allChecked($event)"
                      @sortNameAsc="sortNameAsc"
                      @sortNameDesc="sortNameDesc"
                      @sortAddressDesc="sortAddressDesc"
+                     @sortCreatedAsc="sortCreatedAsc"
+                     @sortCreatedDesc="sortCreatedDesc"
                      @sortAddressAsc="sortAddressAsc"></TableHead>
           <div class="line">
             <Line v-for="(user, index) in users"
@@ -17,8 +21,11 @@
                   :is-checked="isAllChecked"
                   @deleteOne="deleteOne(index)"
                   @showFilledModal="showFilledModal(index)"
-                  :is-pop-up="isPopUp(index)"
-                  @viewPopup="popup"
+                  :is-pop-up="isPopUp"
+                  :popup-now="popupNow"
+                  :index="index"
+                  @update:checkedLine="checkLines($event, index)"
+                  @viewPopup="popupEventHandler($event, index)"
                   @singleCheckBoxChanged="lineSelectCheckboxEventHandler(index, $event)"
                   :user="user"></Line>
           </div>
@@ -27,8 +34,12 @@
   <Modal v-show="isShowModal"
          @modal-close="modalClose"
          @submitted="submitModal"
-         v-model="submitModal"
-         @update:modelValue="fields=$event"
+         :modelName="nameToSend"
+         :modelEmail="emailToSend"
+         :modelAddress="addressToSend"
+         @update:modelName="nameToSend=$event"
+         @update:modelEmail="emailToSend=$event"
+         @update:modelAddress="addressToSend=$event"
          :take-name="nameToSend"
          :take-email="emailToSend"
          :take-address="addressToSend"
@@ -66,6 +77,9 @@ export default {
         created:'',
         photopath:''
       },
+      fields:{},
+      isPopUp:false,
+      popupNow:-1,
       nameToSend:'',
       emailToSend:'',
       addressToSend:'',
@@ -75,7 +89,8 @@ export default {
       item: -1,
       selectState: [],
       isExisted: false,
-      sender: -1
+      sender: -1,
+      selectedLines:[]
     }
   },
 
@@ -98,10 +113,34 @@ export default {
     thisDate: function(){
       return new Date().getDate()+'.'+new Date().getMonth()+'.'+new Date().getFullYear()
     },
+    // nameToSend:{
+    //   get(){
+    //     return this.sentName
+    //   },
+    //   set(value){
+    //     this.sentName=value
+    //   }
+    // },
+    // emailToSend:{
+    //   get(){
+    //     return this.sentEmail
+    //   },
+    //   set(value){
+    //     this.sentEmail=value
+    //   }
+    // },
+    // addressToSend:{
+    //   get(){
+    //     return this.sentAddress
+    //   },
+    //   set(value){
+    //     this.sentAddress=value
+    //   }
+    // },
   },
 
   methods:{
-    /*sets all inputs in checked state*/
+    /*OLD. sets all inputs in checked state*/
     setAllChecked(){
       this.isAllChecked=!this.isAllChecked;
       this.selectState=[];
@@ -111,12 +150,27 @@ export default {
       }}
     },
 
+    /*NEW. sets all inputs in checked state*/
+    allChecked($event){
+      if($event===true){
+        this.isAllChecked=true;
+        this.selectedLines=[];
+        for(let i=0; i<this.users.length; i++){
+          this.selectedLines.push(i);
+        }
+      }
+      if($event===false){
+        this.selectedLines=[];
+      }
+      console.log(this.selectedLines);
+    },
+
     /*delete one row by index*/
     deleteOne(index){
       this.users.splice(index, 1);
     },
 
-    /*catch checkbox changes and add or remove it's state to array*/
+    /*OLD. catch checkbox changes and add or remove it's state to array*/
     lineSelectCheckboxEventHandler(index, event){
       if(event=='true'){
        this.selectState.push(index);
@@ -130,17 +184,27 @@ export default {
       }
       console.log('event handler  '+event);
       console.log(this.selectState);
+      console.log(this.selectedLines);
     },
 
-    /*opens modal window*/
+    /*manages selected rows array*/
+    checkLines($event, index){
+      if($event===true){
+      this.selectedLines.push(index);
+        console.log('event: '+$event+' status: add');
+      }
+      if($event===false){
+        let needIndex=this.selectedLines.indexOf(index);
+        this.selectedLines.splice(needIndex, 1);
+        console.log('event: '+$event+' status: remove')
+      }
+      console.log(this.selectedLines)
+    },
+
+    /*empty modal window for adding a new user*/
     showModal(index){
       if(index<0) {
-        this.isExisted=false;
-        this.sender=-1;
-        this.nameToSend='';
-        this.emailToSend='';
-        this.addressToSend='';
-        this.photopathToSend='';
+        this.emptyUser();
         this.isShowModal = true;
       }
     },
@@ -148,6 +212,14 @@ export default {
     /*close modal*/
     modalClose(){
       this.isShowModal=false;
+      this.isPopUp=false;
+      this.emptyUser();
+    },
+
+    /*empty properties of user*/
+    emptyUser(){
+      this.isExisted= false;
+      this.sender= -1;
       this.nameToSend='';
       this.emailToSend='';
       this.addressToSend='';
@@ -184,26 +256,32 @@ export default {
         this.users.push(newUser);
       }
       this.modalClose();
+      console.log(this.fields);
     },
 
     /*toggle popup menu*/
-    popup(){
-      this.isPopUp=!this.isPopUp;
-    },
-
-    /*hide other popup when other is opened*/
-    isPopUp(index){
-      if(index==this.item)return true;
-      return false;
+    popupEventHandler($event, index){
+      if(!$event){
+        this.isPopUp=false
+      }
+      else{
+        this.isPopUp=true
+      }
+      if(index!=this.popupNow){
+        this.isPopUp=true;
+      }
+      this.popupNow=index;
+      console.log('catch popup + '+this.isPopUp+' '+index+' '+this.popupNow);
     },
 
     /*delete selected users by pressing one button*/
     remove(){
-      for(let i=0, k=0; i<this.selectState.length; i++, k++){
-        let deleted=Number.parseInt(this.selectState[i])-k;
+      //for(let i=0, k=0; i<this.selectState.length; i++, k++){
+      for(let i=0, k=0; i<this.selectedLines.length; i++, k++){
+        let deleted=Number.parseInt(this.selectedLines[i])-k;
         this.deleteOne(deleted);
       }
-      this.selectState=[];
+      this.selectedLines=[];
     },
 
     /*sort ascendingly by key*/
@@ -240,6 +318,51 @@ export default {
 
     sortAddressDesc(){
       this.sortDescBy('address');
+    },
+
+    /*sort by date ascendingly and descendingly*/
+    sortCreated(method){
+      let more;
+      let less;
+      if(method===true){
+        more=1;
+        less=-1;
+      }
+      else{
+        more=-1;
+        less=1;
+      }
+      return this.users.sort(function(a, b) {
+        let x = a['created'].split('.');
+        let y = b['created'].split('.');
+
+        if (x[2] < y[2]) {
+          return less;
+        } else if (x[2] > y[2]) {
+          return more;
+        } else {
+          if (x[1] < y[1]) {
+            return less;
+          } else if (x[1] > y[1]) {
+            return more;
+          } else {
+            if (x[0] < y[0]) {
+              return less;
+            } else if (x[0] > y[0]) {
+              return more;
+            } else {
+              return 0;
+            }
+          }
+        }
+      })
+    },
+
+    sortCreatedAsc(){
+      this.sortCreated(true);
+    },
+    sortCreatedDesc(){
+      this.sortCreated(false);
     }
   }
 }

@@ -257,10 +257,7 @@ th h5{
   padding-left: 1rem;
 
 }
-.cell img{
-  max-height: 3rem;
-  max-width: 4rem;
-}
+
 .cell h6{
   text-align: left;
   text-transform: capitalize;

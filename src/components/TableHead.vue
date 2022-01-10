@@ -1,16 +1,16 @@
 <template>
   <table>
     <tr>
-      <th><input type="checkbox" name="selectAll" @change="$emit('setAllChecked')"></th>
+      <th><input type="checkbox" name="selectAll" v-model="checkAll"></th>
       <th>
         <div>
-          <h5>Preview</h5>
+          <h5 class="col-name">Preview</h5>
         </div>
 
       </th>
       <th>
         <div>
-          <h5>Name</h5>
+          <h5 class="col-name">Name</h5>
         </div>
         <div class="arrows">
           <span class="material-icons" @click="sortNameAsc">arrow_drop_up</span>
@@ -19,7 +19,7 @@
       </th>
       <th>
         <div>
-          <h5>Email</h5>
+          <h5 class="col-name">Email</h5>
         </div>
         <div class="arrows">
           <span class="material-icons" @click="sortEmailAsc">arrow_drop_up</span>
@@ -28,7 +28,7 @@
       </th>
       <th>
         <div>
-          <h5>Address</h5>
+          <h5 class="col-name">Address</h5>
         </div>
         <div class="arrows">
           <span class="material-icons" @click="sortAddressAsc">arrow_drop_up</span>
@@ -37,7 +37,7 @@
       </th>
       <th>
         <div>
-          <h5>Created</h5>
+          <h5 class="col-name">Created</h5>
         </div>
         <div class="arrows">
           <span class="material-icons" @click="sortCreatedAsc">arrow_drop_up</span>
@@ -50,8 +50,10 @@
 </template>
 
 <script>
+//@change="$emit('setAllChecked')"
 export default {
   name: "TableHead",
+  props: ['allCheck'],
   emits:[
     'setAllChecked',
     'sortNameAsc',
@@ -60,8 +62,19 @@ export default {
     'sortAddressAsc',
     'sortAddressDesc',
     'sortCreatedAsc',
-    'sortCreatedDesc'
+    'sortCreatedDesc',
+    'update:checkAllLines'
   ],
+  computed:{
+    checkAll:{
+      get(){
+        return this.allCheck
+      },
+      set(value){
+        this.$emit('update:checkAllLines', value)
+      }
+    }
+  },
   methods:{
     sortNameAsc(){
       this.$emit('sortNameAsc')
@@ -93,4 +106,7 @@ export default {
 
 <style scoped>
 
+.col-name {
+  padding-top: 0.5rem;
+}
 </style>

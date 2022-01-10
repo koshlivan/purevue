@@ -13,7 +13,7 @@
               <input type="text"
                      class="edEdit col-8"
                      name="name"
-                     v-model="sentName"
+                     v-model="name"
                      placeholder="Please enter yor name" >
             </div>
             <div class="row align-items-center justify-content-around ">
@@ -21,7 +21,7 @@
               <input type="email"
                      class="edEdit col-8"
                      name="email"
-                     v-model="sentEmail"
+                     v-model="email"
                      placeholder="test@domain.com" >
             </div>
             <div class="row align-items-center justify-content-around ">
@@ -29,8 +29,8 @@
               <input type="text"
                      class="edEdit col-8"
                      name="address"
-                     v-model="sentAddress"
-                     placeholder="New Channel Name" >
+                     v-model="address"
+                     placeholder="Address" >
             </div>
           </div>
           <div class="foto">
@@ -53,7 +53,9 @@ export default {
   name: "Modal",
 
   props: [
-      'modelValue',
+      'modelName',
+      'modelEmail',
+      'modelAddress',
       'takeName',
       'takeAddress',
       'takeEmail',
@@ -61,7 +63,9 @@ export default {
   ],
 
   emits: [
-      'update:modelValue',
+      'update:modelName',
+      'update:modelEmail',
+      'update:modelAddress',
     'submitted',
     'modal-close'
   ],
@@ -78,36 +82,28 @@ export default {
   },
 
   computed:{
-      value:{
-        get(){
-          return this.modelValue
-        },
-        set(value){
-          this.$emit('update:modelValue', value)
-        }
-      },
-      sentName:{
+      name: {
         get(){
           return this.takeName
         },
         set(newValue){
-          this.name=newValue
+          this.$emit('update:modelName', newValue)
         }
       },
-    sentEmail:{
+    email:{
         get(){
           return this.takeEmail
         },
         set(newValue){
-          this.email=newValue
+          this.$emit('update:modelEmail', newValue)
         }
     },
-    sentAddress:{
+    address:{
         get(){
           return this.takeAddress
         },
         set(newValue){
-          this.address=newValue
+          this.$emit('update:modelAddress', newValue)
         }
     },
     sentPhotopath:function(){
@@ -123,9 +119,9 @@ export default {
 
   data(){
     return{
-      name: this.sentName,
-      email: this.sentEmail,
-      address: this.sentAddress,
+      // name: this.sentName,
+      // email: this.sentEmail,
+      // address: this.sentAddress,
       photo: this.photoPresence,
     }
   }
