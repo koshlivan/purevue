@@ -142,4 +142,145 @@ export default {
 .foto img{
   min-height: 80%;
 }
+#field {
+  min-width: 100%;
+  min-height: 100vh;
+  background-color: rgba(105, 105, 105, 0.7);
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  z-index: 4;
+  position: absolute;
+  top: 0;
+
+}
+.card {
+  min-width: 30%;
+  max-width: 40%;
+  height: 25rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 5px rgba(10, 10, 10, 0.8);
+  position: absolute;
+  top: 50%;
+  left:  50%;
+  transform: translate(-50%, -50%);
+  opacity: 100%;
+}
+.edit-form {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: stretch;
+  opacity: 100%;
+}
+.edit-form div:nth-child(2n+1){
+  min-height: 20%;
+}
+.edit-form div:nth-child(2n){
+  min-height: 60%;
+}
+
+.head{
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+.head h2 {
+  margin: 1rem;
+}
+.head img{
+  max-height: 80%;
+  margin-right: 0.5rem;
+  margin-top: 0.5rem;
+  transition: 300ms;
+}
+.head img:hover{
+  max-height: 85%;
+  cursor: pointer;
+  box-shadow: 0 0 3px gray;
+}
+.head img:active{
+  max-height: 85%;
+  cursor: pointer;
+  box-shadow: 0 0 5px red;
+}
+.close-butt{
+  margin-right: 0.5rem;
+  margin-top: 0.5rem;
+  transition: 300ms;
+}
+.close-butt span:hover{
+  cursor: pointer;
+  box-shadow: 0 0 3px gray;
+}
+
+.inputs {
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+}
+
+.vert {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  max-width: 60%;
+}
+.vert label {
+  padding-left: 2rem;
+}
+.vert input {
+  border: solid 2px black;
+}
+
+.foto{
+  display: flex;
+  max-width: 40%;
+  justify-content: center;
+  align-items: center;
+}
+
+.foto img{
+  max-height: 95%;
+  max-width: 95%;
+}
+
+.finish {
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  margin: 2rem 0;
+}
+
+.finish button{
+  max-height: 2.5rem;
+}
+
+.finish button:nth-child(2n){
+  margin-right: 4rem;
+  margin-left: 1rem;
+}
+
+
+#save {
+  background-color: #0a53be;
+  color: white;
+  border: solid 2px black;
+  font-size: 20px;
+  text-transform: uppercase;
+}
+#save span{
+  vertical-align: text-bottom;
+}
+#close {
+  background-color: #808080;
+  color: white;
+  border: solid 2px black;
+  font-size: 20px;
+  text-transform: uppercase;
+}
 </style>

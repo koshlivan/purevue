@@ -105,6 +105,13 @@ export default {
 
 <style scoped>
 .cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  min-height: 3rem;
+  max-height: 4rem;
+  text-align-all: left;
+  padding-left: 1rem;
   margin: 0;
   box-shadow: 1px 0 3px rgba(128, 128, 128, 0.3);
 }
@@ -171,5 +178,23 @@ input[type=checkbox]{
 #ellips:hover{
   font-size: 20px;
   text-shadow: 1px 2px 3px black;
+}
+
+.cell h6{
+  text-align: left;
+  text-transform: capitalize;
+  vertical-align: center;
+  line-height: 3rem;
+}
+.cell>div{
+  min-width: 14%;
+}
+.cell:hover{
+  background-color: rgba(173,82,14,0.24);
+
+}
+
+#ellips:hover{
+  cursor: pointer;
 }
 </style>

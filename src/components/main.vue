@@ -9,6 +9,7 @@
                      :all-check="isAllChecked"
                      @update:checkAllLines="allChecked($event)"
                      @sortNameAsc="sortNameAsc"
+                     @sort="sort($event)"
                      @sortNameDesc="sortNameDesc"
                      @sortAddressDesc="sortAddressDesc"
                      @sortCreatedAsc="sortCreatedAsc"
@@ -90,7 +91,9 @@ export default {
       selectState: [],
       isExisted: false,
       sender: -1,
-      selectedLines:[]
+      selectedLines:[],
+      sorting: '',
+      sortingVector: 1
     }
   },
 
@@ -305,7 +308,65 @@ export default {
       });
     },
 
-    sortNameAsc(){
+    sort(data){
+      this.sorting=data;
+      console.log(this.sorting);
+      switch(data){
+        case 'name': {
+          if(this.sortingVector>0){
+            this.sortNameAsc();
+            this.sorting='name';
+            this.sortingVector=-1;
+          }
+          else{
+            this.sortNameDesc();
+            this.sorting='name';
+            this.sortingVector=1;
+          }
+        }
+        break;
+        case 'address':{
+          if(this.sortingVector>0){
+            this.sortAddressAsc();
+            this.sorting='address';
+            this.sortingVector=-1;
+          }
+          else{
+            this.sortAddressDesc();
+            this.sorting='address';
+            this.sortingVector=1;
+          }
+        }
+        break;
+        case 'created':{
+          if(this.sortingVector>0){
+            this.sortCreatedAsc();
+            this.sorting='created';
+            this.sortingVector=-1;
+          }
+          else{
+            this.sortCreatedDesc();
+            this.sorting='created';
+            this.sortingVector=1;
+          }
+        }
+        break;
+        default: this.sortingVector=-1;
+      }
+    },
+
+
+    /*sort('email')
+this->current_sort = column
+if (this->current_sort === column) {
+  this->sort_direction = !this->sort_direction
+} else {
+  this->current_sort = column
+  this->sort_direction = 1
+}*/
+
+
+sortNameAsc(){
       this.sortAscBy('name');
     },
 
@@ -371,6 +432,26 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.wrapper {
+  max-width: 100%;
+}
+
+.holder {
+  max-width: 90%;
+  margin: 3rem auto;
+  border: solid 2px black;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.holder h3{
+  margin-left: 1rem;
+  line-height: 3rem;
+  vertical-align: middle;
+}
+
 h3 {
   margin: 40px 0 0;
 }
