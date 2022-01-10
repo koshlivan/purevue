@@ -57,7 +57,7 @@ export default {
   methods:{
 
     options(){
-      this.$emit('viewPopup', this.showOptions);
+      this.$emit('viewPopup', this.checkedLine);
     },
 
     optionsShow(param){

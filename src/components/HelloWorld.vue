@@ -161,6 +161,7 @@ export default {
       }
       if($event===false){
         this.selectedLines=[];
+        this.isAllChecked=false;
       }
       console.log(this.selectedLines);
     },
@@ -262,7 +263,7 @@ export default {
     /*toggle popup menu*/
     popupEventHandler($event, index){
       if(!$event){
-        this.isPopUp=false
+        this.isPopUp=!this.isPopUp
       }
       else{
         this.isPopUp=true
