@@ -7,7 +7,9 @@
       <div><h6>{{ user.address }}</h6></div>
       <div><h6>{{ user.created }}</h6></div>
       <div style="position: relative">
-        <h6 id="ellips" @click="options">&#x22EE;</h6>
+        <h6 id="ellips"
+            title="Press to show addition options"
+            @click="options">&#x22EE;</h6>
         <div id="options" v-show="isPopUp && index==popupNow">
           <h6 @click="showModal"><span class="material-icons">menu</span>View</h6>
           <h6 @click="singleDelete"><span class="material-icons basket">delete</span>Delete</h6>

@@ -5,16 +5,10 @@
       <cap @showModal="showModal(-1)"
            @deleteSelected="remove"></cap>
       <div class="data">
-          <TableHead @setAllChecked="setAllChecked"
-                     :all-check="isAllChecked"
+          <TableHead :all-check="isAllChecked"
+                     :useres="users"
                      @update:checkAllLines="allChecked($event)"
-                     @sortNameAsc="sortNameAsc"
-                     @sort="sort($event)"
-                     @sortNameDesc="sortNameDesc"
-                     @sortAddressDesc="sortAddressDesc"
-                     @sortCreatedAsc="sortCreatedAsc"
-                     @sortCreatedDesc="sortCreatedDesc"
-                     @sortAddressAsc="sortAddressAsc"></TableHead>
+                     @sortDone="makeSort($event)"></TableHead>
           <div class="line">
             <Line v-for="(user, index) in users"
                   :key="user.number"
@@ -63,13 +57,13 @@ export default {
   data(){
     return{
       users: [
-        {number: '1', name: 'bob', email: 'bob@mail.ru', address: 'london', created: '12.12.20', photopath: './assets/unnamed.jpg'},
-        {number: '2', name: 'bill', email: 'bill@mail.ru', address: 'paris', created: '23.12.19', photopath: './assets/index.jpeg'},
-        {number: '3', name: 'john', email: 'john@mail.ru', address: 'berlin', created: '09.08.21', photopath: './assets/index.jpeg'},
-        {number: '4', name: 'sean', email: 'sean@mail.ru', address: 'rome', created: '32.10.21', photopath: './assets/unnamed.jpg'},
-        {number: '5', name: 'harry', email: 'harry@mail.ru', address: 'madrid', created: '09.11.21', photopath: './assets/prof.jpg'},
-        {number: '6', name: 'chuck', email: 'chuck@mail.ru', address: 'madrid', created: '09.11.21', photopath: './assets/index.jpeg'},
-        {number: '7', name: 'bruice', email: 'bruice@mail.ru', address: 'madrid', created: '09.11.21', photopath: './assets/prof.jpg'},
+        {number: '1', name: 'bob', email: 'bob@mail.ru', address: 'london', created: '2020-12-20', photopath: './assets/unnamed.jpg'},
+        {number: '2', name: 'bill', email: 'bill@mail.ru', address: 'paris', created: '2019-10-19', photopath: './assets/index.jpeg'},
+        {number: '3', name: 'john', email: 'john@mail.ru', address: 'berlin', created: '2009-08-21', photopath: './assets/index.jpeg'},
+        {number: '4', name: 'sean', email: 'sean@mail.ru', address: 'rome', created: '2002-10-21', photopath: './assets/unnamed.jpg'},
+        {number: '5', name: 'harry', email: 'harry@mail.ru', address: 'madrid', created: '2009-11-21', photopath: './assets/prof.jpg'},
+        {number: '6', name: 'chuck', email: 'chuck@mail.ru', address: 'madrid', created: '2019-11-21', photopath: './assets/index.jpeg'},
+        {number: '7', name: 'bruice', email: 'bruice@mail.ru', address: 'madrid', created: '1999-11-21', photopath: './assets/prof.jpg'},
       ],
       user:{
         name:'',
@@ -92,8 +86,6 @@ export default {
       isExisted: false,
       sender: -1,
       selectedLines:[],
-      sorting: '',
-      sortingVector: 1
     }
   },
 
@@ -113,319 +105,136 @@ export default {
   ],
 
   computed:{
-    thisDate: function(){
-      return new Date().getDate()+'.'+new Date().getMonth()+'.'+new Date().getFullYear()
+    thisDate: function() {
+      return new Date().getFullYear()+'-'+new Date().getMonth()+'-'+new Date().getDate();
     },
-    // nameToSend:{
-    //   get(){
-    //     return this.sentName
-    //   },
-    //   set(value){
-    //     this.sentName=value
-    //   }
-    // },
-    // emailToSend:{
-    //   get(){
-    //     return this.sentEmail
-    //   },
-    //   set(value){
-    //     this.sentEmail=value
-    //   }
-    // },
-    // addressToSend:{
-    //   get(){
-    //     return this.sentAddress
-    //   },
-    //   set(value){
-    //     this.sentAddress=value
-    //   }
-    // },
+
   },
 
   methods:{
-    /*OLD. sets all inputs in checked state*/
-    setAllChecked(){
-      this.isAllChecked=!this.isAllChecked;
-      this.selectState=[];
-      if(this.isAllChecked===true){
-      for(let i=0; i<this.users.length; i++){
-        this.selectState.push(i);
-      }}
-    },
-
     /*NEW. sets all inputs in checked state*/
-    allChecked($event){
-      if($event===true){
-        this.isAllChecked=true;
-        this.selectedLines=[];
-        for(let i=0; i<this.users.length; i++){
-          this.selectedLines.push(i);
+    allChecked($event) {
+      if ($event === true) {
+        this.isAllChecked = true;
+        this.selectedLines = [];
+        for (let i = 0; i < this.users.length; i++) {
+          this.selectedLines.push( i );
         }
       }
-      if($event===false){
-        this.selectedLines=[];
-        this.isAllChecked=false;
+      if ($event === false) {
+        this.selectedLines = [];
+        this.isAllChecked = false;
       }
-      console.log(this.selectedLines);
     },
 
     /*delete one row by index*/
-    deleteOne(index){
+    deleteOne(index) {
       this.users.splice(index, 1);
     },
 
     /*OLD. catch checkbox changes and add or remove it's state to array*/
-    lineSelectCheckboxEventHandler(index, event){
-      if(event=='true'){
+    lineSelectCheckboxEventHandler(index, event) {
+      if (event=='true') {
        this.selectState.push(index);
-        console.log('must to push');
-      }
-      else{
-
+      } else {
         let num=this.selectState.indexOf(index);
         this.selectState.splice(num, 1);
-        console.log('must to splice');
       }
-      console.log('event handler  '+event);
-      console.log(this.selectState);
-      console.log(this.selectedLines);
     },
 
     /*manages selected rows array*/
-    checkLines($event, index){
-      if($event===true){
+    checkLines($event, index) {
+      if ($event === true) {
       this.selectedLines.push(index);
-        console.log('event: '+$event+' status: add');
       }
-      if($event===false){
-        let needIndex=this.selectedLines.indexOf(index);
+      if ($event === false) {
+        let needIndex = this.selectedLines.indexOf(index);
         this.selectedLines.splice(needIndex, 1);
-        console.log('event: '+$event+' status: remove')
       }
-      console.log(this.selectedLines)
     },
 
     /*empty modal window for adding a new user*/
-    showModal(index){
-      if(index<0) {
+    showModal(index) {
+      if (index<0) {
         this.emptyUser();
         this.isShowModal = true;
       }
     },
 
     /*close modal*/
-    modalClose(){
-      this.isShowModal=false;
-      this.isPopUp=false;
+    modalClose() {
+      this.isShowModal = false;
+      this.isPopUp = false;
       this.emptyUser();
     },
 
     /*empty properties of user*/
-    emptyUser(){
-      this.isExisted= false;
-      this.sender= -1;
-      this.nameToSend='';
-      this.emailToSend='';
-      this.addressToSend='';
-      this.photopathToSend='';
+    emptyUser() {
+      this.isExisted = false;
+      this.sender = -1;
+      this.nameToSend = '';
+      this.emailToSend = '';
+      this.addressToSend = '';
+      this.photopathToSend = '';
     },
 
     /*opens modal window with filled inputs with information of user*/
-    showFilledModal(index){
-      this.isExisted=true;
-      this.sender=index;
-      this.nameToSend=this.users[index].name;
-      this.emailToSend=this.users[index].email;
-      this.addressToSend=this.users[index].address;
-      this.photopathToSend=this.users[index].photopath;
+    showFilledModal(index) {
+      this.isExisted = true;
+      this.sender = index;
+      this.nameToSend = this.users[index].name;
+      this.emailToSend = this.users[index].email;
+      this.addressToSend = this.users[index].address;
+      this.photopathToSend = this.users[index].photopath;
       this.isShowModal = true;
     },
 
     /*save user from modal window*/
-    submitModal(data){
-      let newUser={
+    submitModal(data) {
+      let newUser = {
         name: data.name,
         email: data.email,
         address: data.address,
         created: this.thisDate,
         photopath: 'assets/none.png'
       }
-      if(this.isExisted===true){
+      if (this.isExisted === true) {
             let user=this.users[this.sender];
-            user.name=newUser.name;
-            user.email=newUser.email;
-            user.address=newUser.address;
+            user.name = newUser.name;
+            user.email = newUser.email;
+            user.address = newUser.address;
+          } else {
+          this.users.push(newUser);
           }
-      else{
-        this.users.push(newUser);
-      }
       this.modalClose();
-      console.log(this.fields);
     },
 
     /*toggle popup menu*/
-    popupEventHandler($event, index){
-      if(!$event){
-        this.isPopUp=!this.isPopUp
+    popupEventHandler($event, index) {
+      if (!$event) {
+        this.isPopUp = !this.isPopUp;
+      } else {
+        this.isPopUp = true;
       }
-      else{
-        this.isPopUp=true
+      if (index != this.popupNow) {
+        this.isPopUp = true;
       }
-      if(index!=this.popupNow){
-        this.isPopUp=true;
-      }
-      this.popupNow=index;
-      console.log('catch popup + '+this.isPopUp+' '+index+' '+this.popupNow);
+      this.popupNow = index;
     },
 
     /*delete selected users by pressing one button*/
-    remove(){
+    remove() {
       //for(let i=0, k=0; i<this.selectState.length; i++, k++){
-      for(let i=0, k=0; i<this.selectedLines.length; i++, k++){
-        let deleted=Number.parseInt(this.selectedLines[i])-k;
+      for (let i=0, k=0; i < this.selectedLines.length; i++, k++) {
+        let deleted = Number.parseInt(this.selectedLines[i]) - k;
         this.deleteOne(deleted);
       }
-      this.selectedLines=[];
+      this.selectedLines = [];
     },
 
-    /*sort ascendingly by key*/
-    sortAscBy(key){
-      return this.users.sort(function(a, b)
-      {
-        let x = a[key];
-        let y = b[key];
-        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-      });
+    makeSort($event) {
+      this.users = $event;
     },
-
-    /*sort descendingly by key*/
-    sortDescBy(key){
-      return this.users.sort(function(a, b)
-      {
-        let x = a[key];
-        let y = b[key];
-        return ((x < y) ? 1 : ((x > y) ? -1 : 0));
-      });
-    },
-
-    sort(data){
-      this.sorting=data;
-      console.log(this.sorting);
-      switch(data){
-        case 'name': {
-          if(this.sortingVector>0){
-            this.sortNameAsc();
-            this.sorting='name';
-            this.sortingVector=-1;
-          }
-          else{
-            this.sortNameDesc();
-            this.sorting='name';
-            this.sortingVector=1;
-          }
-        }
-        break;
-        case 'address':{
-          if(this.sortingVector>0){
-            this.sortAddressAsc();
-            this.sorting='address';
-            this.sortingVector=-1;
-          }
-          else{
-            this.sortAddressDesc();
-            this.sorting='address';
-            this.sortingVector=1;
-          }
-        }
-        break;
-        case 'created':{
-          if(this.sortingVector>0){
-            this.sortCreatedAsc();
-            this.sorting='created';
-            this.sortingVector=-1;
-          }
-          else{
-            this.sortCreatedDesc();
-            this.sorting='created';
-            this.sortingVector=1;
-          }
-        }
-        break;
-        default: this.sortingVector=-1;
-      }
-    },
-
-
-    /*sort('email')
-this->current_sort = column
-if (this->current_sort === column) {
-  this->sort_direction = !this->sort_direction
-} else {
-  this->current_sort = column
-  this->sort_direction = 1
-}*/
-
-
-sortNameAsc(){
-      this.sortAscBy('name');
-    },
-
-    sortNameDesc(){
-      this.sortDescBy('name');
-    },
-
-    sortAddressAsc(){
-      this.sortAscBy('address');
-    },
-
-    sortAddressDesc(){
-      this.sortDescBy('address');
-    },
-
-    /*sort by date ascendingly and descendingly*/
-    sortCreated(method){
-      let more;
-      let less;
-      if(method===true){
-        more=1;
-        less=-1;
-      }
-      else{
-        more=-1;
-        less=1;
-      }
-      return this.users.sort(function(a, b) {
-        let x = a['created'].split('.');
-        let y = b['created'].split('.');
-
-        if (x[2] < y[2]) {
-          return less;
-        } else if (x[2] > y[2]) {
-          return more;
-        } else {
-          if (x[1] < y[1]) {
-            return less;
-          } else if (x[1] > y[1]) {
-            return more;
-          } else {
-            if (x[0] < y[0]) {
-              return less;
-            } else if (x[0] > y[0]) {
-              return more;
-            } else {
-              return 0;
-            }
-          }
-        }
-      })
-    },
-
-    sortCreatedAsc(){
-      this.sortCreated(true);
-    },
-    sortCreatedDesc(){
-      this.sortCreated(false);
-    }
   }
 }
 </script>
