@@ -1,7 +1,7 @@
 <template>
   <div id="hat">
     <div className="hat-first">
-      <h3>{{title+' - '+ currentDate}}</h3>
+      <h3 :title="currentDate">{{title+' - '+ currentDate}}</h3>
 
       <div id="myDropdown">
         <div className="myDropdown">

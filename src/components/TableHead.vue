@@ -110,25 +110,17 @@ export default {
         if ( isNaN( Date.parse(this.users[0][this.sorting]) ) ) {
           this.sortBy(this.sorting, this.sortingVector);
 
-          if (this.sortingVector > 0) {
-            this.sortingVector = -1;
-          } else {
-            this.sortingVector = 1;
-          }
+          (this.sortingVector > 0)? this.sortingVector = -1 : this.sortingVector = 1;
         } else {
           this.sortCreated(this.sortingVector);
 
-          if (this.sortingVector>0) {
-            this.sortingVector=-1;
-          } else {
-            this.sortingVector=1;
-          }
+          (this.sortingVector > 0)? this.sortingVector = -1 : this.sortingVector = 1;
         }
     },
 
     /*which arrow will light*/
     isArrowLight(column, order) {
-      if (column===this.sorting && order===this.sortingVector) {
+      if (column === this.sorting && order === this.sortingVector) {
         return true;
       }
       return false;
@@ -137,8 +129,8 @@ export default {
     /*sort by created date asc and desc*/
     sortCreated(order) {
       return this.users.sort( function (a, b) {
-        let dateOne = Date.parse(a['created']);
-        let dateTwo = Date.parse(b['created']);
+        let dateOne = Date.parse( a['created'] );
+        let dateTwo = Date.parse( b['created'] );
 
         if (dateTwo > dateOne) {
           return -(order);
